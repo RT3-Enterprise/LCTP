@@ -1,2 +1,2 @@
 # LCTP
-Logiciel de capture de trame en Python
+Logiciel de capture de trame en Python.

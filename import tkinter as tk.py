@@ -1,22 +1,23 @@
 import tkinter as tk
 
 class LCTPApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("LCTP")
-        self.root.geometry("400x400")
+    def __init__(self, fenetre):
+        self.fenetre = fenetre
+        self.fenetre.title("LCTP")
+        self.fenetre.geometry("400x400")
+        self.fenetre.configure(bg="green")  # Ajout de la couleur verte à la fenêtre
 
         # Titre en rouge
-        title_label = tk.Label(root, text="Logiciel de capture de trame en Python", fg="red")
+        title_label = tk.Label(fenetre, text="Logiciel de capture de trame en Python", fg="red" , bg='green')
         title_label.pack()
 
         # Bouton Quitter
-        quit_button = tk.Button(root, text="Quitter", command=self.quit)
+        quit_button = tk.Button(fenetre, text="Quitter", command=self.quit)
         quit_button.pack()
 
         # Menu
-        menu = tk.Menu(root)
-        root.config(menu=menu)
+        menu = tk.Menu(fenetre)
+        fenetre.config(menu=menu)
 
         # Menu Surveillance
         surveillance_menu = tk.Menu(menu)
@@ -32,23 +33,23 @@ class LCTPApp:
         surveillance_menu.add_command(label="Nombre d'IP disponibles", command=self.display_ip_disponible_compteur)
         surveillance_menu.add_command(label="Nombre de trames reçues", command=self.display_trame_resu_compteur)
 
-        self.mac_compteur_label = tk.Label(root, text=f"Nombre de MAC: {self.mac_compteur}")
+        self.mac_compteur_label = tk.Label(fenetre, text=f"Nombre de MAC: {self.mac_compteur}" , fg='blue' , bg='green')
         self.mac_compteur_label.pack()
 
-        self.ip_envoye_label = tk.Label(root, text=f"Nombre d'IP envoyées: {self.ip_envoye_compteur}")
+        self.ip_envoye_label = tk.Label(fenetre, text=f"Nombre d'IP envoyées: {self.ip_envoye_compteur}" , fg='blue' , bg='green')
         self.ip_envoye_label.pack()
 
-        self.ip_disponible_label = tk.Label(root, text=f"Nombre d'IP disponibles: {self.ip_disponible_compteur}")
+        self.ip_disponible_label = tk.Label(fenetre, text=f"Nombre d'IP disponibles: {self.ip_disponible_compteur}" , fg='blue' , bg='green')
         self.ip_disponible_label.pack()
 
-        self.trame_resu_label = tk.Label(root, text=f"Nombre de trames reçues: {self.trame_resu_compteur}")
+        self.trame_resu_label = tk.Label(fenetre, text=f"Nombre de trames reçues: {self.trame_resu_compteur}" , fg='blue' , bg='green')
         self.trame_resu_label.pack()
 
         # Menu Trame Resu
         trame_resu_menu = tk.Menu(menu)
         menu.add_cascade(label="Trame Resu", menu=trame_resu_menu)
 
-        self.trame_resu_text = tk.Text(root)
+        self.trame_resu_text = tk.Text(fenetre)
         self.trame_resu_text.pack()
 
         # Menu Alerte
@@ -59,7 +60,7 @@ class LCTPApp:
         alerte_menu.add_command(label="Nombre d'alertes", command=self.display_alerte_compteur)
 
     def quit(self):
-        self.root.destroy()
+        self.fenetre.destroy()
 
     def display_mac_compteur(self):
         self.mac_compteur += 1
@@ -81,6 +82,6 @@ class LCTPApp:
         self.alerte_compteur += 1
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = LCTPApp(root)
-    root.mainloop()
+    fenetre = tk.Tk()
+    app = LCTPApp(fenetre)
+    fenetre.mainloop()

@@ -1,103 +1,206 @@
-import tkinter as tk
+import sys
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, \
+    QSizePolicy
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-class LCTPApp:
-    def __init__(self, fenetre):
-        self.fenetre = fenetre
-        self.fenetre.title("LCTP")
-        self.fenetre.geometry("600x400")
-        self.fenetre.configure(bg="green")
+# Configuration réseau par défaut
+IP_DHCP_DEFAULT = "192.168.1.1"
+MASK_DEFAULT = "255.255.255.0"
+MAC_DHCP_DEFAULT = "AA:BB:CC:DD:EE:FF"
+GATEWAY_DEFAULT = "192.168.1.254"
+ip_disponibles = 50
+ip_envoyees = 23
+nombre_MAC = 1
+nombre_trames_recues = 1
 
-        # Titre en rouge
-        title_label = tk.Label(fenetre, text="Logiciel de capture de trame en Python", fg="red", bg='green')
-        title_label.pack()
+class LCTPApp(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        # Configuration de la fenêtre principale
+        self.setWindowTitle("LCTP")  
+        self.setGeometry(100, 100, 600, 400)  
+        self.setStyleSheet("background-color: lightgreen")  
 
-        # Menu
-        menu = tk.Menu(fenetre)
-        fenetre.config(menu=menu)
+        # Initialisation des fenêtres de paramètres et d'alertes
+        self.param_fenetre = None
+        self.alert_fenetre = None
 
-        # Menu Surveillance
-        surveillance_menu = tk.Menu(menu)
-        menu.add_cascade(label="Surveillance", menu=surveillance_menu)
+        # Configuration de la disposition des widgets dans la fenêtre principale
+        central_widget = QWidget(self)
+        self.setCentralWidget(central_widget)
+        main_layout = QVBoxLayout(central_widget)
+        main_layout.setContentsMargins(10, 10, 10, 10)
 
-        self.mac_compteur = 1
-        self.ip_envoye_compteur = 23
-        self.ip_disponible_compteur = 50
-        self.trame_resu_compteur = 1
+        top_layout = QHBoxLayout()
+        main_layout.addLayout(top_layout)
 
-        surveillance_menu.add_command(label="Nombre de MAC", command=self.display_mac_compteur)
-        surveillance_menu.add_command(label="Nombre d'IP envoyées", command=self.display_ip_envoye_compteur)
-        surveillance_menu.add_command(label="Nombre d'IP disponibles", command=self.display_ip_disponible_compteur)
-        surveillance_menu.add_command(label="Nombre de trames reçues", command=self.display_trame_resu_compteur)
+        param_layout = QVBoxLayout()
+        top_layout.addLayout(param_layout)
+        param_layout.setContentsMargins(0, 0, 10, 0)
 
-        self.mac_compteur_label = tk.Label(fenetre, text=f"Nombre de MAC: {self.mac_compteur}", fg='blue', bg='green')
-        self.mac_compteur_label.pack()
+        info_reseaux_layout = QVBoxLayout()
+        top_layout.addLayout(info_reseaux_layout)
 
-        self.ip_envoye_label = tk.Label(fenetre, text=f"Nombre d'IP envoyées: {self.ip_envoye_compteur}", fg='blue', bg='green')
-        self.ip_envoye_label.pack()
+        graphique_layout = QVBoxLayout()
+        main_layout.addLayout(graphique_layout)
 
-        self.ip_disponible_label = tk.Label(fenetre, text=f"Nombre d'IP disponibles: {self.ip_disponible_compteur}", fg='blue', bg='green')
-        self.ip_disponible_label.pack()
+        button_layout = QHBoxLayout()
+        main_layout.addLayout(button_layout)
 
-        self.trame_resu_label = tk.Label(fenetre, text=f"Nombre de trames reçues: {self.trame_resu_compteur}", fg='blue', bg='green')
-        self.trame_resu_label.pack()
+        # Widgets pour les informations du réseau (labels et champs de texte)
+        self.ip_dhcp_line_edit = QLineEdit(IP_DHCP_DEFAULT)
+        self.mask_line_edit = QLineEdit(MASK_DEFAULT)
+        self.mac_dhcp_line_edit = QLineEdit(MAC_DHCP_DEFAULT)
+        self.gateway_line_edit = QLineEdit(GATEWAY_DEFAULT)
 
-        # Créez un graphique camembert
-        self.graphique_camembert_label = tk.Label(fenetre, text="Graphique Camembert", fg='blue', bg='green')
-        self.graphique_camembert_label.pack()
+        # Ajout des widgets dans les layouts correspondants
+        param_layout.addWidget(QLabel("IP du serveur DHCP:"))
+        param_layout.addWidget(self.ip_dhcp_line_edit)
+        param_layout.addWidget(QLabel("Masque de sous-réseaux:"))
+        param_layout.addWidget(self.mask_line_edit)
+        param_layout.addWidget(QLabel("Adresse MAC du serveur DHCP:"))
+        param_layout.addWidget(self.mac_dhcp_line_edit)
+        param_layout.addWidget(QLabel("Adresse de la passerelle:"))
+        param_layout.addWidget(self.gateway_line_edit)
 
-        # Créez un wrapper pour afficher le graphique dans Tkinter
-        self.graphique_camembert_canvas = None
-        self.MAJ_camenbert()
+        # Labels pour les informations du réseau
+        self.ip_dhcp_label = QLabel(f"IP du serveur DHCP: {IP_DHCP_DEFAULT}")
+        self.mask_label = QLabel(f"Masque de sous-réseaux: {MASK_DEFAULT}")
+        self.mac_dhcp_label = QLabel(f"Adresse MAC du serveur DHCP: {MAC_DHCP_DEFAULT}")
+        self.gateway_label = QLabel(f"Adresse de la passerelle: {GATEWAY_DEFAULT}")
 
-        # Bouton Quitter en bas de la fenêtre
-        quit_button = tk.Button(fenetre, text="Quitter", command=self.quit, bg="red", fg="yellow")
-        quit_button.pack(side=tk.BOTTOM)
+        self.ip_disponible_label = QLabel(f"Nombre d'IP disponibles: {ip_disponibles}")
+        self.mac_compteur_label = QLabel(f"Nombre de MAC: {nombre_MAC}")
+        self.ip_envoye_label = QLabel(f"Nombre d'IP envoyées: {ip_envoyees}")
+        self.trame_resu_label = QLabel(f"Nombre de trames reçues: {nombre_trames_recues}")
 
-    def quit(self):
-        self.fenetre.destroy()
+        # Ajout des labels dans les layouts correspondants
+        info_reseaux_layout.addWidget(self.ip_disponible_label)
+        info_reseaux_layout.addWidget(self.mac_compteur_label)
+        info_reseaux_layout.addWidget(self.ip_envoye_label)
+        info_reseaux_layout.addWidget(self.trame_resu_label)
 
-    def display_mac_compteur(self):
-        self.mac_compteur += 1
-        self.mac_compteur_label.config(text=f"Nombre de MAC: {self.mac_compteur}")
+        # Widget pour afficher le graphique camembert
+        self.graphique_widget = QWidget()
+        graphique_layout.addWidget(self.graphique_widget)
+        self.create_pie_chart()
 
-    def display_ip_envoye_compteur(self):
-        self.ip_envoye_compteur += 1
-        self.ip_envoye_label.config(text=f"Nombre d'IP envoyées: {self.ip_envoye_compteur}")
+        # Boutons pour Paramètres, Alerte et Quitter
+        quit_button = QPushButton("Quitter", self)
+        quit_button.setStyleSheet("background-color: red; color: white")
+        quit_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        quit_button.clicked.connect(self.close)
 
-    def display_ip_disponible_compteur(self):
-        self.ip_disponible_compteur += 1
-        self.ip_disponible_label.config(text=f"Nombre d'IP disponibles: {self.ip_disponible_compteur}")
+        param_button = QPushButton("Paramètres", self)
+        param_button.setStyleSheet("background-color: blue; color: white")
+        param_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        param_button.clicked.connect(self.ouvrir_param_fenetre)
 
-    def display_trame_resu_compteur(self):
-        self.trame_resu_compteur += 1
-        self.trame_resu_label.config(text=f"Nombre de trames reçues: {self.trame_resu_compteur}")
+        alerte_button = QPushButton("Alerte", self)
+        alerte_button.setStyleSheet("background-color: red; color: white")
+        alerte_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        alerte_button.clicked.connect(self.ouvrir_alert_fenetre)
 
-    def MAJ_camenbert(self):
-        if self.graphique_camembert_canvas:
-            self.graphique_camembert_canvas.get_tk_widget().destroy()
+        # Ajout des boutons dans le layout dédié aux boutons
+        button_layout.addWidget(param_button)
+        button_layout.addWidget(alerte_button)
+        button_layout.addWidget(quit_button)
 
-        # Données pour le graphique camembert
-        ip_disponibles = self.ip_disponible_compteur
-        ip_envoyees = self.ip_envoye_compteur
+    def create_pie_chart(self):
+        # Fonction pour créer et afficher le graphique camembert
         labels = ["IP disponibles", "IP envoyées"]
-        sizes = [ip_disponibles-ip_envoyees, ip_envoyees]
+        sizes = [ip_disponibles - ip_envoyees, ip_envoyees]
         colors = ['yellowgreen', 'red']
-        # crée le graphique camembert
+
         fig, ax = plt.subplots()
         ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
         ax.axis('equal')
 
-        # Créez un wrapper pour afficher le graphique dans Tkinter
-        self.graphique_camembert_canvas = FigureCanvasTkAgg(fig, master=self.fenetre)
-        self.graphique_camembert_canvas.get_tk_widget().pack()
+        canvas = FigureCanvas(fig)
+        layout = QVBoxLayout(self.graphique_widget)
+        layout.addWidget(canvas)
 
-        # Mettre à jour le camembert toutes les 1 seconde
-        self.fenetre.after(1000, self.MAJ_camenbert)
+    def ouvrir_param_fenetre(self):
+        # Fonction pour ouvrir la fenêtre des paramètres
+        if self.param_fenetre and self.param_fenetre.isVisible():
+            self.param_fenetre.close()
+        self.param_fenetre = ParamWindow(self)
+        self.param_fenetre.show()
+
+    def ouvrir_alert_fenetre(self):
+        # Fonction pour ouvrir la fenêtre d'alerte
+        if self.alert_fenetre and self.alert_fenetre.isVisible():
+            self.alert_fenetre.close()
+        self.alert_fenetre = AlertWindow(self)
+        self.alert_fenetre.show()
+
+class ParamWindow(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Paramètres")
+        self.setGeometry(200, 200, 400, 300)
+        self.setStyleSheet("background-color: #383838; color: white")
+
+        layout = QVBoxLayout(self)
+
+
+        self.ip_dhcp_line_edit = QLineEdit(IP_DHCP_DEFAULT)
+        self.mask_line_edit = QLineEdit(MASK_DEFAULT)
+        self.mac_dhcp_line_edit = QLineEdit(MAC_DHCP_DEFAULT)
+        self.gateway_line_edit = QLineEdit(GATEWAY_DEFAULT)
+
+        layout.addWidget(QLabel("IP du serveur DHCP:", self))
+        layout.addWidget(self.ip_dhcp_line_edit)
+        layout.addWidget(QLabel("Masque de sous-réseaux:", self))
+        layout.addWidget(self.mask_line_edit)
+        layout.addWidget(QLabel("Adresse MAC du serveur DHCP:", self))
+        layout.addWidget(self.mac_dhcp_line_edit)
+        layout.addWidget(QLabel("Adresse de la passerelle:", self))
+        layout.addWidget(self.gateway_line_edit)
+
+        apply_button = QPushButton("Appliquer", self)
+        apply_button.clicked.connect(self.apply_changes)
+        layout.addWidget(apply_button)
+
+        ferme_button = QPushButton("Fermer", self)
+        ferme_button.clicked.connect(self.close)
+        layout.addWidget(ferme_button)
+
+    def apply_changes(self):
+        parent_window = self.parent()
+        parent_window.ip_dhcp_line_edit.setText(self.ip_dhcp_line_edit.text())
+        parent_window.mask_line_edit.setText(self.mask_line_edit.text())
+        parent_window.mac_dhcp_line_edit.setText(self.mac_dhcp_line_edit.text())
+        parent_window.gateway_line_edit.setText(self.gateway_line_edit.text())
+        self.close()
+
+
+class AlertWindow(QWidget):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Alerte")
+        self.setGeometry(200, 200, 400, 300)
+        self.setStyleSheet("background-color: red; color: white")
+
+        layout = QVBoxLayout(self)
+
+        errors = ["Erreur 1: Description de l'erreur 1",
+                  "Erreur 2: Description de l'erreur 2",
+                  "Erreur 3: Description de l'erreur 3"]
+
+        for error in errors:
+            label = QLabel(error, self)
+            layout.addWidget(label)
+
+        ferme_button = QPushButton("Fermer", self)
+        ferme_button.clicked.connect(self.close)
+        layout.addWidget(ferme_button)
+
 
 if __name__ == "__main__":
-    fenetre = tk.Tk()
-    app = LCTPApp(fenetre)
-    app.MAJ_camenbert()  # Appel initial pour commencer la boucle de mise à jour du camembert
-    fenetre.mainloop()
+    app = QApplication(sys.argv)
+    mainWin = LCTPApp()
+    mainWin.show()
+    sys.exit(app.exec_())

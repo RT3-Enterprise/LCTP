@@ -21,11 +21,6 @@ def process_dhcp_packet(packet): # definition de la fonction process_dhcp_packet
         DNS_Ip= packet[scapy.DHCP].options[6][1]
         return trame_type,Source_IP,Destination_IP,Source_MAC,Destination_MAC,Lease_Time,Subnet_Mask,Routeur,DNS_Ip
 
-
-
-
-
-
 if __name__ == "__main__":
     interface = "eth0"  # Remplacez par le nom de votre interface réseau (par exemple, "eth0")
     sniff_dhcp_packets(interface)

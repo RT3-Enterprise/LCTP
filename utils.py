@@ -1,3 +1,4 @@
 #create a packet object
 
-def 
+Class Packet:
+    def __init__(self, )

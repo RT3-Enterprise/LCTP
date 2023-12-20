@@ -1,8 +1,9 @@
 import pymongo
+import os
 from json.objectid import ObjectId
 
-DB_URL = "localhost"
-DB_PORT = 27017
+DB_URL = os.getenv('DATABASE_URL', 'localhost')
+DB_PORT = os.getenv('DATABASE_PORT', 27017)
 
 def startup_db_client():
     mongodb_client = pymongo.MongoClient(DB_URL, DB_PORT)
@@ -80,5 +81,4 @@ def get_db():
     for e in trames.find():
         TRAMES.append(e)
     return RAW, TRAMES
-    
     

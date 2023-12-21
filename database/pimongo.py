@@ -1,11 +1,11 @@
 import pymongo
 import os
-from json.objectid import ObjectId
+import utils
 
 DB_URL = os.getenv('DATABASE_URL', 'localhost')
 DB_PORT = os.getenv('DATABASE_PORT', 27017)
 
-def startup_db_client():
+def client():
     mongodb_client = pymongo.MongoClient(DB_URL, DB_PORT)
     if mongodb_client is None:
         raise Exception("Failed to connect to MongoDB")
@@ -30,47 +30,22 @@ def delete_json(collection, json_data):
     return result
 
 def get_json_by_id(collection, id):
-    result = collection.find_one({"_id": ObjectId(id)})
+    result = collection.find_one({"_id": pymongo.ObjectId(id)})
     if result is None:
         raise Exception("Failed to get json data by id")
     return result
 
-def get_packet(RAW, SRC, DST, MAC, TYPE, BAIL, MASQUE, DHCP, DN, DNS, ROUTER):
-    id = ObjectId()
-    id_raw = ObjectId()
-    raw = {
-        "_id": id_raw,
-        "RAW": RAW
-    }
-    packet = {
-        "_id": id,
-        "RAW_ID": id_raw,
-        "SRC": SRC,
-        "DST": DST,
-        "MAC": MAC,
-        "TYPE": TYPE,
-        "BAIL": BAIL,
-        "MASQUE": MASQUE,
-        "DHCP": DHCP,
-        "DN": DN,
-        "DNS": DNS,
-        "ROUTER": ROUTER
-    }
-    return raw, packet
-
 def initiate_LCTP():
-    client = startup_db_client()
+    client = client()
     db = client["LCTP"]
     raw = db["raw"]
     trames = db["trames"]
     return raw, trames
 
-def insert_packet():
+def insert_packet(packet:utils.Packet):
     raw, trames = initiate_LCTP()
-    data = ilker()
-    packet = get_packet(data)
-    insert_json(raw, packet[0])
-    insert_json(trames, packet[1])
+    insert_json(raw, packet.get_packet)
+    insert_json(trames, packet.get_raw)
     
 def get_db():
     raw, trames = initiate_LCTP()

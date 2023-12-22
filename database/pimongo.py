@@ -2,8 +2,8 @@ import pymongo
 import os
 import utils
 
-DB_URL = os.getenv('DATABASE_URL', 'localhost')
-DB_PORT = os.getenv('DATABASE_PORT', 27017)
+DB_URL = os.getenv('DATABASE_URL', 'localhost') # URL de la BDD (default: localhost)
+DB_PORT = os.getenv('DATABASE_PORT', 27017) # Port de la BDD (default: 27017)
 
 def client():
     mongodb_client = pymongo.MongoClient(DB_URL, DB_PORT)
@@ -56,4 +56,3 @@ def get_db():
     for e in trames.find():
         TRAMES.append(e)
     return RAW, TRAMES
-    

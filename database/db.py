@@ -35,20 +35,21 @@ def get_json_by_id(collection, id):
         raise Exception("Failed to get json data by id")
     return result
 
-def initiate_LCTP():
-    client = client()
+def initiate_LCTP(client=None):
+    if not client:
+        client = client()
     db = client["LCTP"]
     raw = db["raw"]
     trames = db["trames"]
     return raw, trames
 
-def insert_packet(packet:utils.Packet):
-    raw, trames = initiate_LCTP()
+def insert_packet(client, packet:utils.Packet):
+    raw, trames = initiate_LCTP(client)
     insert_json(raw, packet.get_packet)
     insert_json(trames, packet.get_raw)
     
-def get_db():
-    raw, trames = initiate_LCTP()
+def get_db(client):
+    raw, trames = initiate_LCTP(client)
     RAW = []
     TRAMES = []
     for e in raw.find():

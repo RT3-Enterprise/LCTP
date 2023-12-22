@@ -19,7 +19,7 @@ class LCTPApp(QMainWindow):
     def __init__(self):
         super().__init__()
         # Configuration de la fenêtre principale
-        self.setWindowTitle("LCTP")  
+        self.setWindowTitle("LCTP")
         self.setGeometry(100, 100, 600, 400)  
         self.setStyleSheet("background-color: lightgreen")  
 

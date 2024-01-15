@@ -21,7 +21,7 @@ MASK_TRAM = "255.255.255.5"
 MAC_DHCP_TRAM = "AA:BB:CC:DD:EE:FF"
 GATEWAY_TRAM = "192.168.1.254"
 
-
+#b
 class LCTPApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -35,7 +35,6 @@ class LCTPApp(QMainWindow):
         self.alert_fenetre = None
 
         # Configuration de la disposition des widgets dans la fenêtre principale
-
         # Création d'un widget central pour la fenêtre principale
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -91,7 +90,6 @@ class LCTPApp(QMainWindow):
         self.ip_envoye_label = QLabel(f"Nombre d'IP envoyées: {ip_envoyees}")  # Label pour le nombre d'IP envoyées avec sa valeur
         self.trame_resu_label = QLabel(f"Nombre de trames reçues: {nombre_trames_recues}")  # Label pour le nombre de trames reçues avec sa valeur
 
-
         # Ajout des labels dans les layouts correspondants
         info_reseaux_layout.addWidget(self.ip_disponible_label)
         info_reseaux_layout.addWidget(self.mac_compteur_label)
@@ -101,8 +99,8 @@ class LCTPApp(QMainWindow):
         # Widget pour afficher le graphique camembert
         self.graphique_widget = QWidget()
         graphique_layout.addWidget(self.graphique_widget)
-        self.create_pie_chart()
- 
+        self.cree_camembert()
+#a 
         # Boutons pour Paramètres, Alerte et Quitter
         # Création du bouton "Quitter"
         quit_button = QPushButton("Quitter", self)
@@ -122,40 +120,40 @@ class LCTPApp(QMainWindow):
         alerte_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)  # Configuration de la politique de taille du bouton
         alerte_button.clicked.connect(self.ouvrir_alert_fenetre)  # Connexion du signal clicked à la méthode ouvrir_alert_fenetre de la fenêtre principale
 
-
         # Ajout des boutons dans le layout dédié aux boutons
-        button_layout.addWidget(param_button)
-        button_layout.addWidget(alerte_button)
-        button_layout.addWidget(quit_button)
+        button_layout.addWidget(param_button)  # Ajout du bouton Paramètres dans le layout des boutons
+        button_layout.addWidget(alerte_button)  # Ajout du bouton Alerte dans le layout des boutons
+        button_layout.addWidget(quit_button)  # Ajout du bouton Quitter dans le layout des boutons
 
-    def create_pie_chart(self):
+    def cree_camembert(self):
         # Fonction pour créer et afficher le graphique camembert
-        labels = ["IP disponibles", "IP envoyées"]
-        sizes = [ip_disponibles - ip_envoyees, ip_envoyees]
-        colors = ['yellowgreen', 'red']
+        labels = ["IP disponibles", "IP envoyées"]  # Libellés pour les sections du camembert
+        sizes = [ip_disponibles - ip_envoyees, ip_envoyees]  # Tailles des sections
+        colors = ['yellowgreen', 'red']  # Couleurs correspondantes
 
-        fig, ax = plt.subplots()
-        ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)
-        ax.axis('equal')
+        fig, ax = plt.subplots()  # Création d'une figure et d'axes pour le camembert
+        ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90)  # Création du camembert
+        ax.axis('equal')  # Ajustement de l'axe pour un camembert circulaire
 
-        canvas = FigureCanvas(fig)
-        layout = QVBoxLayout(self.graphique_widget)
-        layout.addWidget(canvas)
+        canvas = FigureCanvas(fig)  # Utilisation d'un canevas pour afficher la figure
+        layout = QVBoxLayout(self.graphique_widget)  # Layout pour le widget graphique
+        layout.addWidget(canvas)  # Ajout du canevas dans le layout
 
     def ouvrir_param_fenetre(self):
         # Fonction pour ouvrir la fenêtre des paramètres
         if self.param_fenetre and self.param_fenetre.isVisible():
-            self.param_fenetre.close()
-        self.param_fenetre = ParamWindow(self)
-        self.param_fenetre.show()
+            self.param_fenetre.close()  # Fermeture de la fenêtre si elle est déjà ouverte
+        self.param_fenetre = ParamWindow(self)  # Création de la fenêtre Paramètres
+        self.param_fenetre.show()  # Affichage de la fenêtre des paramètres
 
     def ouvrir_alert_fenetre(self):
         # Fonction pour ouvrir la fenêtre d'alerte
         if self.alert_fenetre and self.alert_fenetre.isVisible():
-            self.alert_fenetre.close()
-        self.alert_fenetre = AlertWindow(self)
-        self.alert_fenetre.show()
+            self.alert_fenetre.close()  # Fermeture de la fenêtre si elle est déjà ouverte (évite le beug de superposition des fenêtres)
+        self.alert_fenetre = AlertWindow(self)  # Création de la fenêtre Alerte
+        self.alert_fenetre.show()  # Affichage de la fenêtre d'alerte
 
+#c
 class ParamWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)  # Appel du constructeur de la classe parente (QWidget)
@@ -200,8 +198,7 @@ class ParamWindow(QWidget):
         parent_window.mac_dhcp_line_edit.setText(self.mac_dhcp_line_edit.text())
         parent_window.gateway_line_edit.setText(self.gateway_line_edit.text())
         self.close()  # Fermeture de la fenêtre de paramètres après application des changements
-
-
+#e
 # Définition d'une nouvelle fenêtre pour afficher les alertes
 class AlertWindow(QWidget):
     def __init__(self, parent=None):
@@ -234,8 +231,7 @@ class AlertWindow(QWidget):
         ferme_button = QPushButton("Fermer", self)  # Création d'un bouton pour fermer la fenêtre
         ferme_button.clicked.connect(self.close)  # Connexion du signal clicked à la méthode close
         layout.addWidget(ferme_button)  # Ajout du bouton dans le layout
-
-
+#i
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     mainWin = LCTPApp()

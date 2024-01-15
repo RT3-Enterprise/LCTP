@@ -22,7 +22,6 @@ def home():
 @app.route('/api/v1/resources/trame/all', methods=['GET'])
 def api_all():
     _,trame = db.get_db(client)
-    flask.
     return flask.jsonify(trame)
 
 app.run()

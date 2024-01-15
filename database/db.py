@@ -58,7 +58,3 @@ def get_db(client):
     for e in trames.find():
         TRAMES.append(e)
     return RAW, TRAMES
-
-client1 = client()
-packet = utils.Packet("sdgfhjklmùù", "192.168.1.1", "192.168.1.5", "ff:ff:ff:ff:ff:ff", "3", "3000", "255.255.255.0", "12", "fgd", "dfg", "dfg")
-insert_packet(client1,packet)

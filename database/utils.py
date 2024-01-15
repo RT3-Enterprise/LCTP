@@ -1,4 +1,6 @@
 from bson.objectid import ObjectId
+from bson import json_util
+import json
 
 class Packet:
     def __init__(self, RAW, SRC, DST, MAC, TYPE, BAIL, MASQUE, DHCP, DN, DNS, ROUTER):
@@ -22,9 +24,3 @@ class Packet:
             "DNS": DNS,
             "ROUTER": ROUTER
         }
-    
-    def get_packet(self):
-        return self.packet
-    
-    def get_raw(self):
-        return self.raw

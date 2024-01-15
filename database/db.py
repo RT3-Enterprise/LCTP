@@ -1,6 +1,7 @@
 import pymongo
 import os
 import utils
+import json
 
 DB_URL = os.getenv('DATABASE_URL', 'localhost') # URL de la BDD (default: localhost)
 DB_PORT = os.getenv('DATABASE_PORT', 27017) # Port de la BDD (default: 27017)
@@ -35,18 +36,18 @@ def get_json_by_id(collection, id):
         raise Exception("Failed to get json data by id")
     return result
 
-def initiate_LCTP(client=None):
-    if not client:
-        client = client()
-    db = client["LCTP"]
+def initiate_LCTP(client1=None):
+    if client1 is None:
+        client1 = client()
+    db = client1["LCTP"]
     raw = db["raw"]
     trames = db["trames"]
     return raw, trames
 
 def insert_packet(client, packet:utils.Packet):
     raw, trames = initiate_LCTP(client)
-    insert_json(raw, packet.get_packet)
-    insert_json(trames, packet.get_raw)
+    insert_json(raw, packet.raw)
+    insert_json(trames, packet.packet)
     
 def get_db(client):
     raw, trames = initiate_LCTP(client)
@@ -57,3 +58,7 @@ def get_db(client):
     for e in trames.find():
         TRAMES.append(e)
     return RAW, TRAMES
+
+client1 = client()
+packet = utils.Packet("sdgfhjklmùù", "192.168.1.1", "192.168.1.5", "ff:ff:ff:ff:ff:ff", "3", "3000", "255.255.255.0", "12", "fgd", "dfg", "dfg")
+insert_packet(client1,packet)

@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, \
-    QSizePolicy
+    QSizePolicy, QTextEdit, QDialog
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -33,7 +33,8 @@ class LCTPApp(QMainWindow):
         # Initialisation des fenêtres de paramètres et d'alertes
         self.param_fenetre = None
         self.alert_fenetre = None
-
+        self.trames_fenetre = None
+        
         # Configuration de la disposition des widgets dans la fenêtre principale
         # Création d'un widget central pour la fenêtre principale
         central_widget = QWidget(self)
@@ -100,6 +101,7 @@ class LCTPApp(QMainWindow):
         self.graphique_widget = QWidget()
         graphique_layout.addWidget(self.graphique_widget)
         self.cree_camembert()
+
 #a 
         # Boutons pour Paramètres, Alerte et Quitter
         # Création du bouton "Quitter"
@@ -124,6 +126,13 @@ class LCTPApp(QMainWindow):
         button_layout.addWidget(param_button)  # Ajout du bouton Paramètres dans le layout des boutons
         button_layout.addWidget(alerte_button)  # Ajout du bouton Alerte dans le layout des boutons
         button_layout.addWidget(quit_button)  # Ajout du bouton Quitter dans le layout des boutons
+        
+        #test3
+        trames_button = QPushButton("Trames", self)
+        trames_button.setStyleSheet("background-color: yellow; color: black")
+        trames_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
+        trames_button.clicked.connect(self.ouvrir_trames_fenetre)
+        button_layout.addWidget(trames_button)
 
     def cree_camembert(self):
         # Fonction pour créer et afficher le graphique camembert
@@ -152,6 +161,12 @@ class LCTPApp(QMainWindow):
             self.alert_fenetre.close()  # Fermeture de la fenêtre si elle est déjà ouverte (évite le beug de superposition des fenêtres)
         self.alert_fenetre = AlertWindow(self)  # Création de la fenêtre Alerte
         self.alert_fenetre.show()  # Affichage de la fenêtre d'alerte
+    #test3
+    def ouvrir_trames_fenetre(self):
+        if self.trames_fenetre and self.trames_fenetre.isVisible():
+            self.trames_fenetre.close()
+        self.trames_fenetre = TramesWindow(self)
+        self.trames_fenetre.show()
 
 #c
 class ParamWindow(QWidget):
@@ -198,6 +213,7 @@ class ParamWindow(QWidget):
         parent_window.mac_dhcp_line_edit.setText(self.mac_dhcp_line_edit.text())
         parent_window.gateway_line_edit.setText(self.gateway_line_edit.text())
         self.close()  # Fermeture de la fenêtre de paramètres après application des changements
+
 #e
 # Définition d'une nouvelle fenêtre pour afficher les alertes
 class AlertWindow(QWidget):
@@ -231,6 +247,42 @@ class AlertWindow(QWidget):
         ferme_button = QPushButton("Fermer", self)  # Création d'un bouton pour fermer la fenêtre
         ferme_button.clicked.connect(self.close)  # Connexion du signal clicked à la méthode close
         layout.addWidget(ferme_button)  # Ajout du bouton dans le layout
+
+#test3
+# Définition d'une nouvelle fenêtre pour afficher les trames capturées
+class TramesWindow(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Trames Capturées")  # Définition du titre de la fenêtre
+        self.setGeometry(200, 200, 600, 400)  # Définition de la position et de la taille de la fenêtre
+        self.setStyleSheet("background-color: white")  # Définition du style de fond de la fenêtre
+
+        # Ajout d'une section pour afficher les trames capturées
+        self.trames_edit = QTextEdit(self)  # Création d'un widget QTextEdit pour afficher les trames
+        self.trames_edit.setReadOnly(True)  # Configuration du mode lecture seule pour le champ de texte des trames
+
+        # Ajout d'une section pour entrer le filtre
+        self.filtre_edit = QTextEdit(self)  # Création d'un widget QTextEdit pour entrer le filtre
+
+        # Ajout d'un bouton pour appliquer le filtre et obtenir les trames
+        apply_button = QPushButton("Appliquer Filtre", self)  # Création d'un bouton avec le texte "Appliquer Filtre"
+        apply_button.clicked.connect(self.appliquer_filtre)  # Connexion du signal clicked à la méthode appliquer_filtre
+
+        # Créez un layout vertical pour organiser les widgets
+        layout = QVBoxLayout(self)  # Création d'un layout vertical pour la fenêtre
+        layout.addWidget(QLabel("Filtre:", self))  # Ajout d'un label "Filtre:" à la fenêtre
+        layout.addWidget(self.filtre_edit)  # Ajout du champ de texte du filtre dans le layout
+        layout.addWidget(apply_button)  # Ajout du bouton "Appliquer Filtre" dans le layout
+        layout.addWidget(QLabel("Trames Capturées:", self))  # Ajout d'un label "Trames Capturées:" à la fenêtre
+        layout.addWidget(self.trames_edit)  # Ajout du champ de texte des trames dans le layout
+
+    def appliquer_filtre(self):
+        # Méthode pour appliquer le filtre et obtenir les trames
+        filtre = self.filtre_edit.toPlainText()  # Récupération du texte du champ de texte du filtre
+        # Voir avec l'API (fonction non définie ici)
+        trames = obtenir_trames_avec_filtre(filtre)  # Appel de la fonction pour obtenir les trames avec le filtre
+        self.trames_edit.setPlainText(trames)  # Affichage des trames dans le champ de texte des trames
+
 #i
 if __name__ == "__main__":
     app = QApplication(sys.argv)

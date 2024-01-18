@@ -11,7 +11,7 @@ MASK_DEFAULT = "255.255.255.0"
 MAC_DHCP_DEFAULT = "AA:BB:CC:DD:EE:FF"
 GATEWAY_DEFAULT = "192.168.1.254"
 ip_disponibles = 50
-ip_envoyees = 23
+ip_envoyees = 24
 nombre_MAC = 1
 nombre_trames_recues = 1
 
@@ -127,7 +127,7 @@ class LCTPApp(QMainWindow):
         button_layout.addWidget(alerte_button)  # Ajout du bouton Alerte dans le layout des boutons
         button_layout.addWidget(quit_button)  # Ajout du bouton Quitter dans le layout des boutons
         
-        #test3
+        #testg
         trames_button = QPushButton("Trames", self)
         trames_button.setStyleSheet("background-color: yellow; color: black")
         trames_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
@@ -161,7 +161,8 @@ class LCTPApp(QMainWindow):
             self.alert_fenetre.close()  # Fermeture de la fenêtre si elle est déjà ouverte (évite le beug de superposition des fenêtres)
         self.alert_fenetre = AlertWindow(self)  # Création de la fenêtre Alerte
         self.alert_fenetre.show()  # Affichage de la fenêtre d'alerte
-    #test3
+        
+#test3
     def ouvrir_trames_fenetre(self):
         if self.trames_fenetre and self.trames_fenetre.isVisible():
             self.trames_fenetre.close()
@@ -220,7 +221,7 @@ class AlertWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)  # Appel du constructeur de la classe parente (QWidget)
         self.setWindowTitle("Alerte")  # Définition du titre de la fenêtre
-        self.setGeometry(200, 200, 400, 300)  # Position et taille de la fenêtre
+        self.setGeometry(200, 200, 540, 300)  # Position et taille de la fenêtre
         self.setStyleSheet("background-color: red; color: white")  # Style de la fenêtre
 
         layout = QVBoxLayout(self)  # Création d'un layout vertical pour organiser les widgets
@@ -235,7 +236,11 @@ class AlertWindow(QWidget):
             errors.append(f"ERREUR MAC_DHCP_TRAM différent de MAC_DHCP_DEFAULT: {MAC_DHCP_TRAM} != {MAC_DHCP_DEFAULT}")
         if GATEWAY_TRAM != GATEWAY_DEFAULT:  # Vérification si la passerelle de la tram est différente de celle par défaut
             errors.append(f"ERREUR GATEWAY_TRAM différent de GATEWAY_DEFAULT: {GATEWAY_TRAM} != {GATEWAY_DEFAULT}")
+        # Ajout d'une vérification si le nombre d'IP envoyées est supérieur au nombre d'IP disponibles
+        if ip_envoyees > ip_disponibles:
+            errors.append(f"ERREUR: Plus d'IP disponibles - IP envoyées ({ip_envoyees}) > IP disponibles ({ip_disponibles})")
 
+#f
         if not errors:  # Vérification s'il n'y a pas d'erreur détectée
             errors.append("Il n'y a pas d'erreur détectée.")  # Message par défaut s'il n'y a pas d'erreur
 
@@ -248,7 +253,7 @@ class AlertWindow(QWidget):
         ferme_button.clicked.connect(self.close)  # Connexion du signal clicked à la méthode close
         layout.addWidget(ferme_button)  # Ajout du bouton dans le layout
 
-#test3
+#testg
 # Définition d'une nouvelle fenêtre pour afficher les trames capturées
 class TramesWindow(QDialog):
     def __init__(self, parent=None):

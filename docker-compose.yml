@@ -1,0 +1,23 @@
+version: '3'
+services:
+  mongo_bdd:
+    image: mongo:latest
+    restart: always
+    command: >
+      bash -c "
+        apt-get update &&
+        apt-get upgrade -y &&
+        apt-get install -y git python3 python3-pip iproute2 &&
+        pip3 install scapy &&
+        git clone https://github.com/RT3-Enterprise/LCTP.git &&
+        python3 LCTP/Code_capture_de_trame/script.py
+      "
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data:/data/db
+    network_mode: host
+
+networks:
+  my_network:  # Déclaration d'un réseau personnalisé
+    driver: bridge  # Utilisation du driver bridge (vous pouvez ajuster selon vos besoins)

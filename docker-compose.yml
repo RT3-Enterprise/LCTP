@@ -12,8 +12,6 @@ services:
         git clone https://github.com/RT3-Enterprise/LCTP.git &&
         python3 LCTP/Code_capture_de_trame/script.py
       "
-    ports:
-      - "27017:27017"
     volumes:
       - ./data:/data/db
     network_mode: host

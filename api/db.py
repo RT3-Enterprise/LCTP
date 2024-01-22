@@ -36,6 +36,13 @@ def get_json_by_id(collection, id):
         raise Exception("Failed to get json data by id")
     return result
 
+def json_to_packet(json_data):
+    data = json.loads(json_data)
+    data_raw = data[0]
+    data_packet = data[1]
+    data = utils.Packet(data_raw['RAW'], data_packet['SRC'], data_packet['DST'], data_packet['MAC'], data_packet['TYPE'], data_packet['BAIL'], data_packet['MASQUE'], data_packet['DHCP'], data_packet['DN'], data_packet['DNS'], data_packet['ROUTER'], data_packet['_id'], data_raw['_id'])
+    return data
+
 def initiate_LCTP(client1=None):
     if client1 is None:
         client1 = client()
@@ -68,3 +75,38 @@ def get_db(client):
     for e in trames.find():
         TRAMES.append(e)
     return RAW, TRAMES
+
+def initiate_Baux(client1=None):
+    if client1 is None:
+        client1 = client()
+    db = client1["LCTP"]
+    baux = db["baux"]
+    return baux
+
+def get_baux(client):
+    baux = initiate_Baux(client)
+    BAUX = []
+    for e in baux.find():
+        BAUX.append(e)
+    return BAUX
+
+def insert_baux(client, baux:utils.Baux):
+    baux = initiate_Baux(client)
+    insert_json(baux, baux.baux)
+    
+def delete_baux(client, baux:utils.Baux):
+    baux = initiate_Baux(client)
+    delete_json(baux, baux.baux)
+    
+def change_baux(client, baux:utils.Baux, new_baux:utils.Baux):
+    baux = initiate_Baux(client)
+    change_json(baux, baux.baux, new_baux.baux)
+    
+def json_to_baux(json_data):
+    data = json.loads(json_data)
+    data = utils.Baux(data['IP'], data['BAIL'], data['_id'])
+    return data
+
+def get_baux_by_id(client, id):
+    baux = initiate_Baux(client)
+    return get_json_by_id(baux, id)

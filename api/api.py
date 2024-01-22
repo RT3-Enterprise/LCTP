@@ -38,19 +38,24 @@ def api_get_packet_id():
 @app.route('/api/v1/resources/packet', methods=['POST'])
 def api_post_packet():
     content = flask.request.json
-    db.insert_packet(client, content)
+    packet = db.json_to_packet(content)
+    db.insert_packet(client, packet)
     return 'OK'
 
 @app.route('/api/v1/resources/packet', methods=['DELETE'])
 def api_delete_packet():
     content = flask.request.json
-    db.delete_packet(client, content)
+    packet = db.json_to_packet(content)
+    db.delete_packet(client, packet)
     return 'OK'
 
 @app.route('/api/v1/resources/packet', methods=['PUT'])
 def api_put_packet():
-    content = flask.request.json
-    db.change_packet(client, content)
+    content_json = flask.request.json
+    content = json.loads(content_json)
+    packet = db.json_to_packet(content['json'])
+    new_packet = db.json_to_packet(content['json_new'])
+    db.change_packet(client, packet, new_packet)
     return 'OK'
 
 @app.route('/api/v1/resources/trame/all', methods=['GET'])
@@ -97,6 +102,52 @@ def api_id_raw():
             results.append(ra)
     return flask.jsonify(results)
 
+@app.route('/api/v1/resources/baux/all', methods=['GET'])
+def api_all_baux():
+    baux = db.get_baux(client)
+    return flask.jsonify(baux)
+
+@app.route('/api/v1/resources/baux', methods=['GET'])
+def api_baux_filter():
+    baux = db.get_baux(client)
+    args = flask.request.args
+    results = []
+    for bail in baux:
+        flag = False
+        only = True
+        for key in args:
+            if key in ba:
+                if ba[key] == args[key]:
+                    flag = True
+                else: 
+                    only = False
+        if 'only' in args:
+            results.append(ba) if only else None
+        else:
+            results.append(ba) if flag else None
+                        
+    return flask.jsonify(results)
+
+def api_post_baux():
+    content = flask.request.json
+    baux = db.json_to_baux(content)
+    db.insert_baux(client, baux)
+    return 'OK'
+
+def api_delete_baux():
+    content = flask.request.json
+    baux = db.json_to_baux(content)
+    db.delete_baux(client, baux)
+    return 'OK'
+
+def api_put_baux():
+    content_json = flask.request.json
+    content = json.loads(content_json)
+    baux = db.json_to_baux(content['json'])
+    new_baux = db.json_to_baux(content['json_new'])
+    db.change_baux(client, baux, new_baux)
+    return 'OK'
+
 if __name__ == "__main__":
     from waitress import serve
-    serve(app, host="0.0.0.0", port=8080)
+    serve(app, host="0.0.0.0", port=5000)

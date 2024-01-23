@@ -3,7 +3,7 @@ import os
 import utils
 import json
 
-DB_URL = os.getenv('DATABASE_URL', 'mongo_bdd') # URL de la BDD (default: localhost)
+DB_URL = os.getenv('DATABASE_URL', 'localhost') # URL de la BDD (default: localhost)
 DB_PORT = os.getenv('DATABASE_PORT', 27017) # Port de la BDD (default: 27017)
 
 def client():

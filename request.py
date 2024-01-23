@@ -63,7 +63,7 @@ def put_baux(baux:utils.Baux, new_baux:utils.Baux): # Fonction pour modifier un 
     }
     return requests.put(API_URL + '/baux', json=data)
 
-def put_baux_ip(ip) # Fonction pour modifier un baux en fonction de son ip
+def put_baux_ip(ip): # Fonction pour modifier un baux en fonction de son ip
     # A FAIRE
     content = ip_in_baux(ip)
     if content:

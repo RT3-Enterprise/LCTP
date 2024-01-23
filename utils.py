@@ -3,7 +3,7 @@ from bson import json_util
 import json
 
 class Packet:
-    def __init__(self, RAW, SRC, DST, MAC, TYPE, BAIL, MASQUE, DHCP, DN, DNS, ROUTER, id=None, id_raw=None):
+    def __init__(self, RAW, SRC, DST, MAC_SRC, MAC_DST, TYPE, BAIL, MASQUE, DN, DNS, ROUTER, id=None, id_raw=None):
         id = str(ObjectId()) if id == None else id
         id_raw = str(ObjectId()) if id_raw == None else id_raw
         self.raw = {
@@ -15,11 +15,11 @@ class Packet:
             "RAW_ID": id_raw,
             "SRC": SRC,
             "DST": DST,
-            "MAC": MAC,
+            "MAC_SRC": MAC_SRC,
+            "MAC_DST": MAC_DST,
             "TYPE": TYPE,
             "BAIL": BAIL,
             "MASQUE": MASQUE,
-            "DHCP": DHCP,
             "DN": DN,
             "DNS": DNS,
             "ROUTER": ROUTER

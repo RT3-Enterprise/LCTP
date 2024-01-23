@@ -3,7 +3,7 @@ import os
 import utils
 import json
 
-DB_URL = os.getenv('DATABASE_URL', 'localhost') # URL de la BDD (default: localhost)
+DB_URL = os.getenv('DATABASE_URL', 'mongo_bdd') # URL de la BDD (default: localhost)
 DB_PORT = os.getenv('DATABASE_PORT', 27017) # Port de la BDD (default: 27017)
 
 def client():
@@ -40,7 +40,7 @@ def json_to_packet(json_data):
     data = json.loads(json_data)
     data_raw = data[0]
     data_packet = data[1]
-    data = utils.Packet(data_raw['RAW'], data_packet['SRC'], data_packet['DST'], data_packet['MAC'], data_packet['TYPE'], data_packet['BAIL'], data_packet['MASQUE'], data_packet['DHCP'], data_packet['DN'], data_packet['DNS'], data_packet['ROUTER'], data_packet['_id'], data_raw['_id'])
+    data = utils.Packet(data_raw['RAW'], data_packet['SRC'], data_packet['DST'], data_packet['MAC_SRC'], data_packet['MAC_DST'], data_packet['TYPE'], data_packet['BAIL'], data_packet['MASQUE'], data_packet['DN'], data_packet['DNS'], data_packet['ROUTER'], data_packet['_id'], data_raw['_id'])
     return data
 
 def initiate_LCTP(client1=None):

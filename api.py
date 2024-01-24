@@ -21,12 +21,12 @@ def api_get_packet():   # fonction pour récupérer tous les packets
 @app.route('/api/v1/resources/packet/last', methods=['GET']) # route pour récupérer tous les packets
 def api_get_last_packet(): # fonction pour récupérer le dernier packet
     _,trame = db.get_db(client) # on récupère les packets
-    return flask.jsonify(trame[-1])
+    return flask.jsonify(trame[-1]) if len(trame) > 0 else flask.jsonify([])
 
 @app.route('/api/v1/resources/packet/first', methods=['GET']) # route pour récupérer tous les packets
 def api_get_first_packet():
     _,trame = db.get_db(client)
-    return flask.jsonify(trame[0])
+    return flask.jsonify(trame[0]) if len(trame) > 0 else flask.jsonify([])
 
 @app.route('/api/v1/resources/packet', methods=['GET']) # route pour récupérer un packet en fonction de son id
 def api_get_packet_id(): # fonction pour récupérer un packet

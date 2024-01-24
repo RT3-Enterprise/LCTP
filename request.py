@@ -77,13 +77,3 @@ def delete_baux(baux:utils.Baux): # Fonction pour supprimer un baux
     return requests.delete(API_URL + '/baux', json=json_baux)
 
 # Tests
-
-p = utils.Packet('RAW1', 'SRC1', 'DST1', 'MAC1', 'TYPE1', 'BAIL1', 'MASQUE1', 'DHCP1', 'DN1', 'DNS1', 'ROUTER1')
-post_packet(p)
-
-params = {'SRC':'SRC1'}
-result = get_trame_flitered(params)
-print(json.dumps(result, indent=4, sort_keys=True))
-
-delete_packet(p)
-print(json.dumps(get_packet_all(), indent=4, sort_keys=True))

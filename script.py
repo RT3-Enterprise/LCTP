@@ -1,8 +1,8 @@
 import scapy.all as scapy # import de la bibliothèque scapy
 import utils
-import request
+import db
 type_list=["","Discover","Offer","Request","Decline","Ack","Nak","Release","Inform"] # On identifie grâce au numméro d'Opcode la nature depuis cette liste
-
+client = db.client()
 class DhcpPacketInfo: #initialisation de l'object 
     def __init__(self, trame_type, source_ip, destination_ip, source_mac, destination_mac, lease_time, subnet_mask, routeur, domain_name, dns_ip):
         self.trame_type = trame_type
@@ -36,11 +36,10 @@ def process_dhcp_packet(packet): # definition de la fonction process_dhcp_packet
         domain_name=packet[scapy.DHCP].options[5][1]
         dns_ip=packet[scapy.DHCP].options[6][1]
         dhcp_info = utils.Packet(packet, source_ip, destination_ip, source_mac, destination_mac, trame_type, lease_time, subnet_mask, domain_name, dns_ip, routeur)
-        print(dhcp_info.trame_type)
-        request.post_packet(dhcp_info)
-        return dhcp_info
-
-
+        try:
+            db.insert_packet(client, dhcp_info)
+        except:
+            print("Erreur lors de l'insertion du packet")
 
 if __name__ == "__main__":
     interface = "eth0"  # Remplacez par le nom de votre interface réseau (par exemple, "eth0")

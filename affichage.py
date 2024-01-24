@@ -143,15 +143,15 @@ class LCTPApp(QMainWindow):
         self.timer.start(500) #le timer avec une intervalle de 500 millisecondes
 
     def mise_a_jour_variables(self):
-        nouvelle_ip_dhcp = "nouvelle_ip_dhcp"
-        nouvelle_mask = "nouveau_masque"
-        nouvelle_mac_dhcp = "nouvelle_mac_dhcp"
-        nouvelle_gateway = "nouvelle_gateway"
         
-        IP_DHCP_TRAM = nouvelle_ip_dhcp
-        MASK_TRAM = nouvelle_mask
-        MAC_DHCP_TRAM = nouvelle_mac_dhcp
-        GATEWAY_TRAM = nouvelle_gateway
+        trame = request.get_trame_last()
+        if default.source_ip != trame.source_ip:
+            request.post_baux(trame.source_ip, trame.lease_time)
+        
+        IP_DHCP_TRAM = trame.source_ip
+        MASK_TRAM = trame.subnet_mask
+        MAC_DHCP_TRAM = trame.source_mac
+        GATEWAY_TRAM = trame.routeur
 
         self.ip_dhcp_line_edit.setText(IP_DHCP_TRAM)
         self.mask_line_edit.setText(MASK_TRAM)

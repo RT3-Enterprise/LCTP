@@ -1,20 +1,17 @@
 from bson.objectid import ObjectId
 from bson import json_util
 import json
-import time
 
 class Packet:
     def __init__(self, RAW, SRC, DST, MAC_SRC, MAC_DST, TYPE, BAIL, MASQUE, DN, DNS, ROUTER, id=None, id_raw=None):
         id = str(ObjectId()) if id == None else id
         id_raw = str(ObjectId()) if id_raw == None else id_raw
-        time = time.timestamp()
         self.raw = {
             "_id": id_raw,
             "RAW": RAW
         }
         self.packet = {
             "_id": id,
-            "TIME": time,
             "RAW_ID": id_raw,
             "SRC": SRC,
             "DST": DST,
@@ -43,7 +40,6 @@ class Baux:
         time = time.timestamp()
         self.baux = {
             "_id": id,
-            "TIME": time,
             "IP": IP,
             "BAIL": BAIL
         }

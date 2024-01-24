@@ -4,12 +4,15 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHB
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
+import request
+
+default = request.get_trame_first()
 
 # Configuration réseau par défaut
-IP_DHCP_DEFAULT = "192.168.1.1"
-MASK_DEFAULT = "255.255.255.0"
-MAC_DHCP_DEFAULT = "AA:BB:CC:DD:EE:FF"
-GATEWAY_DEFAULT = "192.168.1.254"
+IP_DHCP_DEFAULT = default.source_ip if 
+MASK_DEFAULT = default.subnet_mask
+MAC_DHCP_DEFAULT = default.source_mac
+GATEWAY_DEFAULT = default.routeur
 ip_disponibles = 50
 ip_envoyees = 24
 nombre_MAC = 1

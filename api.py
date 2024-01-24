@@ -18,6 +18,16 @@ def api_get_packet():   # fonction pour récupérer tous les packets
     L = [raw,trame]
     return flask.jsonify(L)
 
+@app.route('/api/v1/resources/packet/last', methods=['GET']) # route pour récupérer tous les packets
+def api_get_last_packet(): # fonction pour récupérer le dernier packet
+    raw,trame = db.get_db(client) # on récupère les packets
+    return flask.jsonify(trame[-1]) # on retourne le dernier packet
+
+@app.route('/api/v1/resources/packet/first', methods=['GET']) # route pour récupérer tous les packets
+def api_get_first_packet():
+    raw,trame = db.get_db(client)
+    return flask.jsonify(trame[0])
+
 @app.route('/api/v1/resources/packet', methods=['GET']) # route pour récupérer un packet en fonction de son id
 def api_get_packet_id(): # fonction pour récupérer un packet
     raw,trame = db.get_db(client) # on récupère les packets
@@ -61,6 +71,16 @@ def api_put_packet(): # fonction pour modifier un packet
 def api_all_trame(): # fonction pour récupérer toutes les trames
     _,trame = db.get_db(client) # on récupère les trames
     return flask.jsonify(trame) # on retourne les trames
+
+@app.route('/api/v1/resources/trame/last', methods=['GET']) # route pour récupérer toutes les trames
+def api_last_trame():
+    _,trame = db.get_db(client)
+    return flask.jsonify(trame[-1])
+
+@app.route('/api/v1/resources/trame/first', methods=['GET']) # route pour récupérer tous les packets
+def api_first_trame():
+    _,trame = db.get_db(client)
+    return flask.jsonify(trame[0])
 
 @app.route('/api/v1/resources/trame', methods=['GET']) # route pour récupérer une trame en fonction de son id
 def api_filter(): # fonction pour récupérer une trame

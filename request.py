@@ -12,8 +12,20 @@ def get(url): # Fonction pour faire des requêtes GET
 def get_packet_all(): # Fonction pour récupérer tous les packets
     return get(API_URL + '/packet/all')
 
+def get_packet_last(): # Fonction pour récupérer le dernier packet
+    return get(API_URL + '/packet/last')
+
+def get_packet_first(): # Fonction pour récupérer le premier packet
+    return get(API_URL + '/packet/first')
+
 def get_raw_all(): # Fonction pour récupérer tous les raw
     return get(API_URL + '/raw/all')
+
+def get_trame_last(): # Fonction pour récupérer la dernière trame
+    return get(API_URL + '/trame/last')
+
+def get_trame_first(): # Fonction pour récupérer la première trame
+    return get(API_URL + '/trame/first')
 
 def get_trame_flitered(filter, only=False): # Fonction pour récupérer les trames filtrées
     if only:

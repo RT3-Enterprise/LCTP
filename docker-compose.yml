@@ -1,0 +1,38 @@
+version: '3'
+services:
+  mongo_bdd:
+    image: mongo:latest
+    container_name: mongo_bdd
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo_data:/data/db
+    networks:
+      - my_network  # Utilisation du réseau personnalisé
+
+  lctp:
+    image: alpine:latest
+    restart: always
+    container_name: lctp
+    environment:
+      - DATABASE_URL=mongo_bdd
+      - INTERFACE=enp0s31f6
+    command: >
+     sh -c "
+     apk update &&
+     apk upgrade &&
+     apk add git python3 py3-pip iproute2 &&
+     python3 -m venv venv &&
+     pip3 install scapy requests pymongo waitress flask  --break-system-packages &&
+     git clone https://github.com/RT3-Enterprise/LCTP.git &&
+     python3 LCTP/api.py &&
+     python3 LCTP/script.py
+     "
+    network_mode: host
+    depends_on:
+      - mongo_bdd
+
+networks:
+  my_network:  # Déclaration d'un réseau personnalisé
+    driver: bridge  # Utilisation du driver bridge (vous pouvez ajuster selon vos besoins)

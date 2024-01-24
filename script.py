@@ -36,7 +36,7 @@ def process_dhcp_packet(packet): # definition de la fonction process_dhcp_packet
         routeur=packet[scapy.DHCP].options[4][1]
         domain_name=packet[scapy.DHCP].options[5][1]
         dns_ip=packet[scapy.DHCP].options[6][1]
-        dhcp_info = utils.Packet(packet, source_ip, destination_ip, source_mac, destination_mac, trame_type, lease_time, subnet_mask, domain_name, dns_ip, routeur)
+        dhcp_info = utils.Packet(str(packet), str(source_ip), str(destination_ip), str(source_mac), str(destination_mac), str(trame_type), str(lease_time), str(subnet_mask), str(domain_name), str(dns_ip), str(routeur))
         try:
             request.insert(dhcp_info)
         except:
@@ -45,4 +45,3 @@ def process_dhcp_packet(packet): # definition de la fonction process_dhcp_packet
 if __name__ == "__main__":
     interface = os.getenv('INTERFACE', 'eth0')
     sniff_dhcp_packets(interface)
-

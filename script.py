@@ -1,6 +1,6 @@
 import scapy.all as scapy # import de la bibliothèque scapy
 import utils
-import requests # import de la bibliothèque requests
+import request
 import os
 
 type_list=["","Discover","Offer","Request","Decline","Ack","Nak","Release","Inform"] # On identifie grâce au numméro d'Opcode la nature depuis cette liste

@@ -1,6 +1,7 @@
 import scapy.all as scapy # import de la bibliothèque scapy
 import utils
 import request
+import os
 
 type_list=["","Discover","Offer","Request","Decline","Ack","Nak","Release","Inform"] # On identifie grâce au numméro d'Opcode la nature depuis cette liste
 class DhcpPacketInfo: #initialisation de l'object 
@@ -42,6 +43,6 @@ def process_dhcp_packet(packet): # definition de la fonction process_dhcp_packet
             print("Erreur lors de l'insertion du packet")
 
 if __name__ == "__main__":
-    interface = "eth0"  # Remplacez par le nom de votre interface réseau (par exemple, "eth0")
+    interface = os.getenv('INTERFACE', 'eth0')
     sniff_dhcp_packets(interface)
 

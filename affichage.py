@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, \
     QSizePolicy, QTextEdit, QDialog
+from PyQt5.QtCore import QTimer
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 import matplotlib.pyplot as plt
@@ -9,7 +10,7 @@ import request
 default = request.get_trame_first()
 
 # Configuration réseau par défaut
-IP_DHCP_DEFAULT = default.source_ip if 
+IP_DHCP_DEFAULT = default.source_ip
 MASK_DEFAULT = default.subnet_mask
 MAC_DHCP_DEFAULT = default.source_mac
 GATEWAY_DEFAULT = default.routeur
@@ -136,7 +137,27 @@ class LCTPApp(QMainWindow):
         trames_button.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         trames_button.clicked.connect(self.ouvrir_trames_fenetre)
         button_layout.addWidget(trames_button)
+        
+        self.timer = QTimer(self)
+        self.timer.timeout.connect(self.mise_a_jour_variables)
+        self.timer.start(500) #le timer avec une intervalle de 500 millisecondes
 
+    def mise_a_jour_variables(self):
+        nouvelle_ip_dhcp = "nouvelle_ip_dhcp"
+        nouvelle_mask = "nouveau_masque"
+        nouvelle_mac_dhcp = "nouvelle_mac_dhcp"
+        nouvelle_gateway = "nouvelle_gateway"
+        
+        IP_DHCP_TRAM = nouvelle_ip_dhcp
+        MASK_TRAM = nouvelle_mask
+        MAC_DHCP_TRAM = nouvelle_mac_dhcp
+        GATEWAY_TRAM = nouvelle_gateway
+
+        self.ip_dhcp_line_edit.setText(IP_DHCP_TRAM)
+        self.mask_line_edit.setText(MASK_TRAM)
+        self.mac_dhcp_line_edit.setText(MAC_DHCP_TRAM)
+        self.gateway_line_edit.setText(GATEWAY_TRAM)
+        
     def cree_camembert(self):
         # Fonction pour créer et afficher le graphique camembert
         labels = ["IP disponibles", "IP envoyées"]  # Libellés pour les sections du camembert

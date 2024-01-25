@@ -1,29 +1,17 @@
-import scapy.all as scapy # import de la bibliothèque scapy
+import scapy.all as scapy # import des différentes bibliothèques (scapy,utils,request,os)
 import utils
 import request
 import os
 
-type_list=["","Discover","Offer","Request","Decline","Ack","Nak","Release","Inform"] # On identifie grâce au numméro d'Opcode la nature depuis cette liste
-class DhcpPacketInfo: #initialisation de l'object 
-    def __init__(self, trame_type, source_ip, destination_ip, source_mac, destination_mac, lease_time, subnet_mask, routeur, domain_name, dns_ip):
-        self.trame_type = trame_type
-        self.source_ip = source_ip
-        self.destination_ip = destination_ip
-        self.source_mac = source_mac
-        self.destination_mac = destination_ip
-        self.lease_time = lease_time
-        self.subnet_mask = subnet_mask
-        self.routeur = routeur
-        self.domain_name = domain_name
-        self.dns_ip = dns_ip
+type_list=["","Discover","Offer","Request","Decline","Ack","Nak","Release","Inform"] # On identifie la nature de la trame grâce au numméro d'Opcode la nature depuis cette liste
 
-def sniff_dhcp_packets(interface):  # definition de la fonction sniff_dhcp_packets d'argument interface, il capture les packets dhcp
+def sniff_dhcp_packets(interface):  # Fonction qui permet de sniff les packets DHCP sur une interface précise (interface à définir selon le votre)
     try:    # un bloc d'essai pour gérer les exceptions
         scapy.sniff(iface=interface, store=False, prn=process_dhcp_packet, filter="udp and port 67 or port 68") # fonction sniff de scapy pour capturer les packets , iface --> interface , store --> stockage en mémoire True Or False , prn --> fonction qui sera apelle pour chaque paquet capturé, filtre udp 67 donc server DHCP et 68 client DHCP
     except KeyboardInterrupt:      # gére le Ctrl+c pour arrêter la capture de trame
         print("Arrêt de la capture.") # le script nous dis alors que la capture s'arrête
 
-def process_dhcp_packet(packet): # definition de la fonction process_dhcp_packet d'argument packet
+def process_dhcp_packet(packet): # Permet d'analyser ma trame dhcp pour la découpé et en resortir que les infos qui m'intérésee
     if packet.haslayer(scapy.DHCP):
         type=packet[scapy.DHCP].options[0][1]# Permet de renvoyer l'Opcode qui détermine la nature du paquet et de la stocker dans la variable "type"
         trame_type = type_list[type] # Le nom des variables ci-dessous permet de savoir ce que l'on récupére
@@ -36,12 +24,12 @@ def process_dhcp_packet(packet): # definition de la fonction process_dhcp_packet
         routeur=packet[scapy.DHCP].options[4][1]
         domain_name=packet[scapy.DHCP].options[5][1]
         dns_ip=packet[scapy.DHCP].options[6][1]
-        dhcp_info = utils.Packet(str(packet), str(source_ip), str(destination_ip), str(source_mac), str(destination_mac), str(trame_type), str(lease_time), str(subnet_mask), str(domain_name), str(dns_ip), str(routeur))
+        dhcp_info = utils.Packet(str(packet), str(source_ip), str(destination_ip), str(source_mac), str(destination_mac), str(trame_type), str(lease_time), str(subnet_mask), str(domain_name), str(dns_ip), str(routeur)) #crée la variable dhcp_info comprenant tout les informations dhcp importante
         try:
-            request.post_packet(dhcp_info)
+            request.post_packet(dhcp_info)        # envoie le contenue de la variable vers la bdd
         except:
             print("Erreur lors de l'insertion du packet")
 
-if __name__ == "__main__":
-    interface = os.getenv('INTERFACE', 'eth0')
-    sniff_dhcp_packets(interface)
+if __name__ == "__main__":    
+    interface = os.getenv('INTERFACE', 'eth0')    #définition de l'interface sniffer sur l'appareil
+    sniff_dhcp_packets(interface)            #lance le script pour sniffer les paquets 

@@ -10,10 +10,10 @@ import request
 default = request.get_trame_first()
 
 # Configuration réseau par défaut
-IP_DHCP_DEFAULT = default.source_ip
-MASK_DEFAULT = default.subnet_mask
-MAC_DHCP_DEFAULT = default.source_mac
-GATEWAY_DEFAULT = default.routeur
+IP_DHCP_DEFAULT = default['SRC']
+MASK_DEFAULT = default['MASQUE']
+MAC_DHCP_DEFAULT = default['MAC_SRC']
+GATEWAY_DEFAULT = default['ROUTER']
 ip_disponibles = 50
 ip_envoyees = 24
 nombre_MAC = 1
@@ -145,13 +145,13 @@ class LCTPApp(QMainWindow):
     def mise_a_jour_variables(self):
         
         trame = request.get_trame_last()
-        if default.source_ip != trame.source_ip:
-            request.post_baux(trame.source_ip, trame.lease_time)
+        if default['SRC'] != trame['SRC']:
+            request.post_baux(trame['SRC'], trame['BAIL'])
         
-        IP_DHCP_TRAM = trame.source_ip
-        MASK_TRAM = trame.subnet_mask
-        MAC_DHCP_TRAM = trame.source_mac
-        GATEWAY_TRAM = trame.routeur
+        IP_DHCP_TRAM = trame['SRC']
+        MASK_TRAM = trame['MASQUE']
+        MAC_DHCP_TRAM = trame['MAC_SRC']
+        GATEWAY_TRAM = trame['ROUTER']
 
         self.ip_dhcp_line_edit.setText(IP_DHCP_TRAM)
         self.mask_line_edit.setText(MASK_TRAM)

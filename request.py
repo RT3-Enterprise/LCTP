@@ -78,11 +78,8 @@ def put_baux(baux:utils.Baux, new_baux:utils.Baux): # Fonction pour modifier un 
 def put_baux_ip(ip): # Fonction pour modifier un baux en fonction de son ip
     # A FAIRE
     content = ip_in_baux(ip)
-    if content:
-        bail = json_to_baux(content)
-        
-    else:
-        return post_baux(bail)
+    bail = utils.Baux(ip, 'BAIL')
+    post_baux(bail)
 
 def delete_baux(baux:utils.Baux): # Fonction pour supprimer un baux
     json_baux = baux.to_json()

@@ -186,7 +186,7 @@ class LCTPApp(QMainWindow):
         self.alert_fenetre = AlertWindow(self)  # Création de la fenêtre Alerte
         self.alert_fenetre.show()  # Affichage de la fenêtre d'alerte
         
-#test3
+
     def ouvrir_trames_fenetre(self):
         if self.trames_fenetre and self.trames_fenetre.isVisible():
             self.trames_fenetre.close()
@@ -311,7 +311,7 @@ class TramesWindow(QDialog):
         trames = obtenir_trames_avec_filtre(filtre)  # Appel de la fonction pour obtenir les trames avec le filtre
         self.trames_edit.setPlainText(trames)  # Affichage des trames dans le champ de texte des trames
 
-#i
+
 if __name__ == "__main__": # Vérification si le fichier est exécuté directement
     app = QApplication(sys.argv) # Création de l'application
     mainWin = LCTPApp() # Création de la fenêtre principale

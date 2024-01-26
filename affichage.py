@@ -25,7 +25,7 @@ MASK_TRAM = "255.255.255.5"
 MAC_DHCP_TRAM = "AA:BB:CC:DD:EE:FF"
 GATEWAY_TRAM = "192.168.1.254"
 
-#b
+
 class LCTPApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -106,7 +106,7 @@ class LCTPApp(QMainWindow):
         graphique_layout.addWidget(self.graphique_widget)
         self.cree_camembert()
 
-#a 
+
         # Boutons pour Paramètres, Alerte et Quitter
         # Création du bouton "Quitter"
         quit_button = QPushButton("Quitter", self)
@@ -193,7 +193,7 @@ class LCTPApp(QMainWindow):
         self.trames_fenetre = TramesWindow(self)
         self.trames_fenetre.show()
 
-#c
+
 class ParamWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)  # Appel du constructeur de la classe parente (QWidget)
@@ -239,7 +239,7 @@ class ParamWindow(QWidget):
         parent_window.gateway_line_edit.setText(self.gateway_line_edit.text())
         self.close()  # Fermeture de la fenêtre de paramètres après application des changements
 
-#e
+
 # Définition d'une nouvelle fenêtre pour afficher les alertes
 class AlertWindow(QWidget):
     def __init__(self, parent=None):
@@ -263,7 +263,7 @@ class AlertWindow(QWidget):
         if ip_envoyees > ip_disponibles:
             errors.append(f"ERREUR: Plus d'IP disponibles - IP envoyées ({ip_envoyees}) > IP disponibles ({ip_disponibles})")
 
-#f
+
         if not errors:  # Vérification s'il n'y a pas d'erreur détectée
             errors.append("Il n'y a pas d'erreur détectée.")  # Message par défaut s'il n'y a pas d'erreur
 

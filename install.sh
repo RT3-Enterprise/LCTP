@@ -9,7 +9,6 @@ apt-get install -y git libgl1-mesa-glx libxcb-icccm4 nano iputils-ping python3 p
 pip3 install pymongo scapy requests flask PyQt5 matplotlib waitress
 
 # Installation de gnupg et ajout de la clé MongoDB
-sudo apt-get update
 sudo apt-get install gnupg -y
 wget -qO - https://www.mongodb.org/static/pgp/server-${MONGO_VERSION}.asc | sudo apt-key add -
 cd /etc/apt/sources.list.d/

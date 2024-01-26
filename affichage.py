@@ -276,7 +276,6 @@ class AlertWindow(QWidget):
         ferme_button.clicked.connect(self.close)  # Connexion du signal clicked à la méthode close
         layout.addWidget(ferme_button)  # Ajout du bouton dans le layout
 
-#testg
 # Définition d'une nouvelle fenêtre pour afficher les trames capturées
 class TramesWindow(QDialog):
     def __init__(self, parent=None):
@@ -310,7 +309,6 @@ class TramesWindow(QDialog):
         # Voir avec l'API (fonction non définie ici)
         trames = obtenir_trames_avec_filtre(filtre)  # Appel de la fonction pour obtenir les trames avec le filtre
         self.trames_edit.setPlainText(trames)  # Affichage des trames dans le champ de texte des trames
-
 
 if __name__ == "__main__": # Vérification si le fichier est exécuté directement
     app = QApplication(sys.argv) # Création de l'application
